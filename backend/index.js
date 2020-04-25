@@ -8,4 +8,4 @@ io.on("connetion", socket => {
     console.log("a user connected :D");
 });
 
-server.listen(port, () => console.log("server running on port:", port));
+server.listen(port, () => console.log(server));
