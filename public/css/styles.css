@@ -1,0 +1,24 @@
+#app{
+    margin: 0 auto;
+    width: 400px;
+}
+#app h1{
+    font-family: 'Days One', sans-serif;
+    font-size: 1.6em;
+}
+.header{
+    position: relative;
+}
+.header .Logo{
+    background:url(img/logo.png) no-repeat;
+    width:200px;
+    height:200px;
+}
+.header input{
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.shout_box{
+    width: 330px;
+}
