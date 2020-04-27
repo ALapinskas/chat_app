@@ -33,9 +33,7 @@ class Chat extends React.Component{
     }
 
     componentDidMount() {
-        this.socket = io(process.env.NODE_ENV === "development" 
-            ? "http://localhost:" + process.env.PORT
-            : "");
+        this.socket = io();
         this.socket.on('messagesUpdated', (messages) => {
             this.setState({messages});
         });
