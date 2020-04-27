@@ -46,14 +46,14 @@ class ChatBox extends React.Component {
 
 class ChatMessage extends React.Component {
     render() {
-        return <p>{this.props.message}</p>;
+        return <p>{this.props.messageObj.author}: {this.props.messageObj.message}</p>;
     }
 }
 
 class ChatList extends React.Component {
     render() {
         var messages = this.props.messages.map(function(msg) {
-            return <ChatMessage message={msg} />;
+            return <ChatMessage messageObj={msg} />;
         });
 
         return <div>{messages}</div>;

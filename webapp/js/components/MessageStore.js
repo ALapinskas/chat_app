@@ -1,13 +1,12 @@
 //This is just imitation
 var EventEmitter = require('events').EventEmitter;
-
 var emitter = new EventEmitter();
 
 var messages = [];
 
 module.exports = {
     getMessages: function() {
-       return messages.concat();
+       return messages;
     },
 
     subscribe: function(callback) {
@@ -18,8 +17,8 @@ module.exports = {
         emitter.removeListener('update', callback);
     },
 
-    newMessage: function(message) {
-        messages.push(message);
+    newMessage: function(message, author) {
+        messages.push({message, author});
         emitter.emit('update');
     }
 };

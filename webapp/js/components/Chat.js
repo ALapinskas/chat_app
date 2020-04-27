@@ -1,5 +1,6 @@
 var React = require('react');
 var updateTheMessages;
+var io = require('socket.io-client');
 
 import { ChatList, ChatBox } from './ChatBox';
 import MessageStore from './MessageStore';
@@ -14,35 +15,48 @@ class Chat extends React.Component{
             messages: getLastMessages,
             author: enterName
         };
+        this.socket = undefined;
 
-        this.updateMessages = this.updateMessages.bind(this);
+        //this.updateMessages = this.updateMessages.bind(this);
     }
 
     componentWillMount() {
-        MessageStore.subscribe(this.updateMessages);
+        //MessageStore.subscribe(this.updateMessages);
         //updateTheMessages = setInterval(() => this.updateMessages(), 1000);
     }
 
     componentWillUnmount() {
-        MessageStore.unsubscribe(this.updateMessages);
+        //MessageStore.unsubscribe(this.updateMessages);
         //clearInterval(updateTheMessages);
+        this.socket.removeAllListeners();
+        this.socket = undefined;
     }
 
-    updateMessages() {
-        this.setState({
-            messages: MessageStore.getMessages()
+    componentDidMount() {
+        this.socket = io(process.env.NODE_ENV === "development" 
+            ? "http://localhost:" + process.env.PORT
+            : "");
+        this.socket.on('messagesUpdated', (messages) => {
+            this.setState({messages});
         });
     }
 
-    onSend(newMessage) {
-        MessageStore.newMessage(newMessage, this.state.author);
+    //updateMessages() {
+    //    this.setState({
+    //        messages: MessageStore.getMessages()
+    //    });
+    //}
+
+    onSend(message) {
+        this.socket.emit('message', {message, author: this.state.author});
+        //MessageStore.newMessage(newMessage, this.state.author);
     }
 
     render() {
         return (
             <div>
                 <ChatList messages={this.state.messages || []} />
-                <ChatBox onSend={() => this.onSend()} />
+                <ChatBox onSend={(newMessage) => this.onSend(newMessage)} />
             </div>
         );
     }

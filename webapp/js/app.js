@@ -4,6 +4,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Logo from './components/Logo';
 import Chat from './components/Chat';
+import dotenv from 'dotenv';
+dotenv.config()
 
 let contact = (
     <div>
