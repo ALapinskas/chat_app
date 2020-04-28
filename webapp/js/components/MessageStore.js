@@ -18,7 +18,9 @@ module.exports = {
     },
 
     newMessage: function(message, author) {
-        messages.push({message, author});
-        emitter.emit('update');
+        //messages.push({message, author});
+        //socket.on('connect', function(){});
+        socket.emit('message', {message, author});
+        //emitter.emit('update');
     }
 };
