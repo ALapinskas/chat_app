@@ -10,7 +10,7 @@ dotenv.config()
 let contact = (
     <div>
         <h1>
-            <Logo /> Welcome to our Chat App!
+            <Logo /> Вечерний чат<br /> Нижнего Новгорода!
         </h1>
         <Chat />
     </div>

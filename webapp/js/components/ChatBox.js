@@ -35,9 +35,9 @@ class ChatBox extends React.Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <label>
-                    <input className="shout_box" value={this.state.input} onChange={this.updateInput} type="text" placeholder="Write your message here" />
+                    <input className="shout_box" value={this.state.input} onChange={this.updateInput} type="text" placeholder="Пишите сюда" />
                 </label>
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Отправить" />
             </form>
         );
     }
@@ -52,7 +52,7 @@ class ChatMessage extends React.Component {
 
 class ChatList extends React.Component {
     render() {
-        var messages = this.props.messages.map(function(msg) {
+        var messages = this.props.messages.reverse().map(function(msg) {
             return <ChatMessage messageObj={msg} />;
         });
 

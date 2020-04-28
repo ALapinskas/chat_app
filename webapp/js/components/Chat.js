@@ -53,8 +53,8 @@ class Chat extends React.Component{
     render() {
         return (
             <div>
-                <ChatList messages={this.state.messages || []} />
                 <ChatBox onSend={(newMessage) => this.onSend(newMessage)} />
+                <ChatList messages={this.state.messages || []} />
             </div>
         );
     }
