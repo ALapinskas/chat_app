@@ -18,13 +18,13 @@ const io = socketIO(server);
 io.on('connection', (socket) => {
     console.log("a user connected :D");
     //retrieve all messages
-    if(messages.length === 0) {
-      retrieveMessagesFromDatabase(function() {
-        socket.emit('messagesUpdated', messages);
-      });
-    } else {
+    //if(messages.length === 0) {
+    //  retrieveMessagesFromDatabase(function() {
+    //    socket.emit('messagesUpdated', messages);
+    //  });
+    //} else {
       socket.emit('messagesUpdated', messages);
-    }
+    //}
     //save message, and emit messagesUpdated
     socket.on('message', message => {
       if (message) {
@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
       console.log('Client disconnected');
       if(Object.keys(io.sockets.connected).length === 0) {
         //if all users are dissconneced save data to the database
-        saveMessagesToDatabase();
+        //saveMessagesToDatabase();
       }
     });
 });
