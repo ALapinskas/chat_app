@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node backend/index.js",
-    "prod": "NODE_ENV=production node backend/index.js",
+    "prod": "NODE_ENV=production NODE_DB=postrgress node backend/index.js",
     "build": "webpack"
   },
   "repository": {
@@ -24,9 +24,12 @@
   },
   "homepage": "https://github.com/YaAlfred/chat_app#readme",
   "dependencies": {
+    "@blueprintjs/core": "^3.26.0",
     "dotenv": "^8.2.0",
     "express": "4.17.1",
     "gulp": "4.0.2",
+    "mongodb": "^3.5.6",
+    "pg": "^8.0.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "socket.io": "2.3.0",
