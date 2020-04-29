@@ -2,7 +2,7 @@ const express = require("express"),
       path = require('path'),
       socketIO = require("socket.io"),
       port = process.env.PORT || 3000,
-      sqlite3 = require('sqlite3').verbose(),
+      //sqlite3 = require('sqlite3').verbose(),
       pg = require('pg'),
       dotenv = require('dotenv').config(),
       INDEX = path.resolve(__dirname, "../public/index.html");
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
 
 function connectToDb() {
   switch (process.env.NODE_DB) {
-    case 'sqllite':
+    case 'sqlite':
       db = new sqlite3.Database("database", null, (err) => {
         console.error(err);
       });
@@ -64,18 +64,18 @@ function connectToDb() {
 
 function retrieveMessagesFromDatabase(callback) {
   switch (process.env.NODE_DB) {
-    case 'sqllite':
+    case 'sqlite':
       retrieveMessagesFromDatabaseSqllite(callback);
     case 'mongo':
       retrieveMessagesFromDatabaseMongo(callback);
     case 'postrgress':
-        retrieveMessagesFromDatabasePostgress(callback);
+      retrieveMessagesFromDatabasePostgress(callback);
   }
 }
 
 function saveMessagesToDatabase() {
   switch (process.env.NODE_DB) {
-    case 'sqllite':
+    case 'sqlite':
       saveMessagesToDatabaseSqllite();
     case 'mongo':
       saveMessagesToDatabaseMongo();
@@ -148,5 +148,5 @@ function saveMessagesToDatabasePostrgress() {
     db.query("INSERT INTO messages (message, author) VALUES ($1, $2)", [message.message, message.author]);
   });
   db.end(); 
-  
+
 }
