@@ -4,8 +4,8 @@
   "description": "Websocket Chat Application",
   "main": "index.js",
   "scripts": {
-    "start": "node backend/index.js",
-    "prod": "NODE_ENV=production NODE_DB=postrgress node backend/index.js",
+    "start": "NODE_ENV=production NODE_DB=postrgress node backend/index.js",
+    "local": "node backend/index.js",
     "build": "webpack"
   },
   "repository": {
