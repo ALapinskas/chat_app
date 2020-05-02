@@ -3,11 +3,14 @@ const express = require("express"),
       socketIO = require("socket.io"),
       port = process.env.PORT || 3000,
       //sqlite3 = require('sqlite3').verbose(),
+      { exec } = require('child_process'),
       pg = require('pg'),
-      dotenv = require('dotenv').config(),
+      dotenv = require('dotenv'),
       INDEX = path.resolve(__dirname, "../public/index.html");
 
 let messages = [], db;
+
+dotenv.config();
 
 const app = express()
   .use(express.static(path.resolve(__dirname, '../public')))
@@ -53,12 +56,36 @@ function connectToDb() {
       //code for mongo
       //db = 
     case 'postrgress':
-      db = new pg.Client({
+      /*db = new pg.Client({
         connectionString: process.env.DATABASE_URL,
-        ssl: true,
-      });
+        host: 'ec2-46-137-84-140.eu-west-1.compute.amazonaws.com',
+        database: 'd7me8q5bctljau', // default process.env.PGDATABASE || process.env.USER
+        port: 5432,
+        user: 'hjpvdkqvhuucpl',
+        password: '5bcaa8bfb4e3c1b11d4defd81b71cf9a79eff0dcf838b1871e2f464b888fd9de',
+        //ssl: true,
+      });*/
 
-      db.connect();
+      return new Promise((resolve, reject) => {
+        exec('heroku config:get DATABASE_URL -a chatapp-nn', (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          
+          db = new pg.Client({
+            connectionString: stdout//,
+            //ssl: true
+          });
+  
+          console.log('connect db');
+  
+          db.connect();
+
+          resolve();
+        });
+      })
+      
   }
 }
 
@@ -126,27 +153,26 @@ function saveMessagesToDatabaseMongo() {
 
 function retrieveMessagesFromDatabasePostgress(finishedCallBack) {
 
-  connectToDb();
-
-  db.query('SELECT * FROM messages;', (err, res) => {
-    if (err) throw err;
-    for (let row of res.rows) {
-      messages.push({ message: row.message, author: row.author });
-    }
-    db.end();
-    finishedCallBack();
+  connectToDb().then(() => {
+    db.query('SELECT * FROM messages;', (err, res) => {
+      if (err) throw err;
+      for (let row of res.rows) {
+        messages.push({ message: row.message, author: row.author });
+      }
+      db.end();
+      finishedCallBack();
+    });
   });
 
 }
 
 function saveMessagesToDatabasePostrgress() {
 
-  connectToDb();
-
-  db.query("CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT, author TEXT);");
-  messages.forEach((message) => {
-    db.query("INSERT INTO messages (message, author) VALUES ($1, $2)", [message.message, message.author]);
+  connectToDb().then(() => {
+    db.query("CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT, author TEXT);");
+    messages.forEach((message) => {
+      db.query("INSERT INTO messages (message, author) VALUES ($1, $2)", [message.message, message.author]);
+    });
+    db.end(); 
   });
-  db.end(); 
-
 }
