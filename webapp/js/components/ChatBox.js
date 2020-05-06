@@ -1,4 +1,5 @@
 ﻿import React from 'react';
+import { Button } from "@blueprintjs/core";
 
 class ChatBox extends React.Component {
 
@@ -20,11 +21,13 @@ class ChatBox extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        this.props.onSend(this.state.input);
+        if (this.state.input.trim().length > 0) {
+            this.props.onSend(this.state.input);
 
-        this.setState({
-            input: ''
-        });
+            this.setState({
+                input: ''
+            });
+        }
     }
 
     updateInput(event) {
@@ -34,10 +37,8 @@ class ChatBox extends React.Component {
     render () {
         return (
             <form onSubmit={this.handleSubmit}>
-                <label>
-                    <input className="shout_box" value={this.state.input} onChange={this.updateInput} type="text" placeholder="Пишите сюда" />
-                </label>
-                <input type="submit" value="Отправить" />
+                <input className="shout_box" value={this.state.input} onChange={this.updateInput} type="text" placeholder="Сообщение" />
+                <input class="bp3-button" type="submit" value="Отправить" />
             </form>
         );
     }
