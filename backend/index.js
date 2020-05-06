@@ -67,23 +67,45 @@ function connectToDb() {
       });*/
 
       return new Promise((resolve, reject) => {
-        exec('heroku config:get DATABASE_URL -a chatapp-nn', (error, stdout, stderr) => {
-          if (error) {
-            console.error(`exec error: ${error}`);
-            return;
-          }
-          
-          db = new pg.Client({
-            connectionString: stdout//,
-            //ssl: true
-          });
-  
-          console.log('connect db');
-  
-          db.connect();
-
-          resolve();
-        });
+        switch (process.env.NODE_ENV) {
+          case "production":
+            exec('heroku config:get DATABASE_URL -a chatapp-nn', (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                return;
+              }
+              
+              db = new pg.Client({
+                connectionString: stdout, //+ "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"//,
+                //ssl: true
+              });
+      
+              console.log('connect db');
+      
+              db.connect()
+                .then(() => {
+                  resolve()
+                })
+                .catch((err) => {
+                  console.error(err);
+              });
+            });
+          case "development":
+            db = new pg.Client({
+              connectionString: "postgresql://localhost"//,
+              //ssl: true
+            });
+    
+            console.log('connect db');
+    
+            db.connect()
+              .then(() => {
+                resolve()
+              })
+              .catch((err) => {
+                console.error(err);
+            });
+        }
       })
       
   }
@@ -116,6 +138,7 @@ function saveMessagesToDatabaseSqllite() {
   connectToDb();
 
   db.serialize(function() {
+
     db.run("CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT, author TEXT)");
    
     var stmt = db.prepare("INSERT INTO messages (message, author) VALUES (?, ?)");
@@ -154,25 +177,46 @@ function saveMessagesToDatabaseMongo() {
 function retrieveMessagesFromDatabasePostgress(finishedCallBack) {
 
   connectToDb().then(() => {
-    db.query('SELECT * FROM messages;', (err, res) => {
-      if (err) throw err;
-      for (let row of res.rows) {
-        messages.push({ message: row.message, author: row.author });
-      }
-      db.end();
-      finishedCallBack();
-    });
+    db.query('SELECT * FROM messages;')
+      .then((res) => {
+        for (let row of res.rows) {
+          messages.push({ message: row.message, author: row.author, id: row.id});
+        }
+        Promise.resolve();
+      })
+      .then(() => {
+        db.end();
+        finishedCallBack();
+      })
+      .catch((err) => {
+        if (err) {
+          if (err.code === "42P01" && err.message === 'relation "messages" does not exist') {
+            db.end();
+            return;
+          } else {
+            throw err;
+          }
+        }
+      });
   });
 
 }
 
 function saveMessagesToDatabasePostrgress() {
 
-  connectToDb().then(() => {
-    db.query("CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT, author TEXT);");
-    messages.forEach((message) => {
-      db.query("INSERT INTO messages (message, author) VALUES ($1, $2)", [message.message, message.author]);
+  connectToDb()
+    .then(() => db.query("CREATE TABLE IF NOT EXISTS messages (id SERIAL PRIMARY KEY, message text, author text, timestamp timestamp default current_timestamp);"))
+    .then(() => {
+      let preparedPromisesQueres = [];
+      messages.forEach((message) => {
+        if (!message.hasOwnProperty('id')) {
+          preparedPromisesQueres.push(db.query("INSERT INTO messages (message, author) VALUES ($1, $2)", [message.message, message.author]));
+        }
+      });
+      return Promise.all(preparedPromisesQueres);
+    })
+    .then(() => db.end())
+    .catch((err) => {
+      console.log(err);
     });
-    db.end(); 
-  });
 }
