@@ -77,7 +77,7 @@ function connectToDb() {
               
               db = new pg.Client({
                 connectionString: stdout, //+ "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"//,
-                //ssl: true
+                ssl: true
               });
       
               console.log('connect db');
