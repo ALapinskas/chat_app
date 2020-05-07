@@ -3,16 +3,20 @@ var updateTheMessages;
 var io = require('socket.io-client');
 
 import { ChatList, ChatBox } from './ChatBox';
-import MessageStore from './MessageStore';
 
 class Chat extends React.Component{
 
     constructor(props) {
         super();
         let enterName =  prompt('Please enter your name');
-        let getLastMessages = MessageStore.getMessages();
+
+        this.dataStore = props.store;
+
+        if (enterName) {
+            this.dataStore.setAuthorName(enterName);
+        }
         this.state = {
-            messages: getLastMessages,
+            messages: this.dataStore.getMessages(),
             author: enterName
         };
         this.socket = undefined;
@@ -21,13 +25,11 @@ class Chat extends React.Component{
     }
 
     componentWillMount() {
-        //MessageStore.subscribe(this.updateMessages);
+        //DataStore.subscribe(this.updateMessages);
         //updateTheMessages = setInterval(() => this.updateMessages(), 1000);
     }
 
     componentWillUnmount() {
-        //MessageStore.unsubscribe(this.updateMessages);
-        //clearInterval(updateTheMessages);
         this.socket.removeAllListeners();
         this.socket = undefined;
     }
@@ -39,15 +41,8 @@ class Chat extends React.Component{
         });
     }
 
-    //updateMessages() {
-    //    this.setState({
-    //        messages: MessageStore.getMessages()
-    //    });
-    //}
-
     onSend(message) {
         this.socket.emit('message', {message, author: this.state.author});
-        //MessageStore.newMessage(newMessage, this.state.author);
     }
 
     render() {

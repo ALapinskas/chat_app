@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Button } from "@blueprintjs/core";
+import { Button, ControlGroup } from "@blueprintjs/core";
 
 class ChatBox extends React.Component {
 
@@ -37,8 +37,10 @@ class ChatBox extends React.Component {
     render () {
         return (
             <form onSubmit={this.handleSubmit}>
-                <input className="shout_box" value={this.state.input} onChange={this.updateInput} type="text" placeholder="Сообщение" />
-                <input class="bp3-button" type="submit" value="Отправить" />
+                <ControlGroup fill={true} vertical={false}>
+                    <input className="shout_box bp3-input" value={this.state.input} onChange={this.updateInput} type="text" placeholder="Сообщение" />
+                    <input class="bp3-button" type="submit" value="Отправить" />
+                </ControlGroup>
             </form>
         );
     }
