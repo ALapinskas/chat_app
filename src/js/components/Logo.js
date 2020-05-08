@@ -57,18 +57,18 @@ class Logo extends React.Component{
                 <div className="Logo" />
                 <FormGroup className="user-info">
                     <p>Вы вошли как: {this.state.authorName} </p>
-                    <input onClick={this._showChangeNameDialog} class="bp3-button" type="submit" value="Сменить ник" />
+                    <Button icon="edit" onClick={this._showChangeNameDialog} class="bp3-button" type="submit">Сменить ник</Button>
                 </FormGroup>
-                <Dialog icon="info-sign" canEscapeKeyClose={true} isCloseButtonShown={true} isOpen={this.state.isDialogOpen}>
-                    <FormGroup className={Classes.DIALOG_BODY}>
+                <Dialog title="Введите ваше имя" usePortal={true} canEscapeKeyClose={true} isCloseButtonShown={true} onClose={this._cancelAndClose} isOpen={this.state.isDialogOpen}>
+                    <div className={Classes.DIALOG_BODY}>
                         <input className="shout_box bp3-input" value={this.state.inputName} onChange={(input) => this._updateInputName(input.target.value)} type="text"/>
-                        <div className={Classes.DIALOG_FOOTER}>
-                            <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                                <Button onClick={this._cancelAndClose}>Отмена</Button>
-                                <Button onClick={this._saveAndClose}>Сохранить</Button>
-                            </div>
+                    </div>
+                    <div className={Classes.DIALOG_FOOTER}>
+                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            <Button onClick={this._cancelAndClose}>Отмена</Button>
+                            <Button onClick={this._saveAndClose}>Сохранить</Button>
                         </div>
-                    </FormGroup>
+                    </div>
                 </Dialog>
             </div>
         );

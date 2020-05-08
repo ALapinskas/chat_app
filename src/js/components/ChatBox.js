@@ -39,7 +39,7 @@ class ChatBox extends React.Component {
             <form onSubmit={this.handleSubmit}>
                 <ControlGroup fill={true} vertical={false}>
                     <input className="shout_box bp3-input" value={this.state.input} onChange={this.updateInput} type="text" placeholder="Сообщение" />
-                    <input class="bp3-button" type="submit" value="Отправить" />
+                    <Button class="bp3-button"  icon="comment" type="submit">Отправить</Button>
                 </ControlGroup>
             </form>
         );
