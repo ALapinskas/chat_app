@@ -3,7 +3,7 @@ const express = require("express"),
       socketIO = require("socket.io"),
       port = process.env.PORT || 3000,
       //sqlite3 = require('sqlite3').verbose(),
-      { exec } = require('child_process'),
+      //{ exec } = require('child_process'),
       pg = require('pg'),
       dotenv = require('dotenv'),
       INDEX = path.resolve(__dirname, "../public/index.html");
@@ -74,7 +74,7 @@ function connectToDb() {
                 console.error(`exec error: ${error}`);
                 return;
               }*/
-              https.globalAgent.options.rejectUnauthorized = false;
+              //https.globalAgent.options.rejectUnauthorized = false;
               db = new pg.Client({
                 connectionString: process.env.DATABASE_URL,
                 //"postgres://hjpvdkqvhuucpl:5bcaa8bfb4e3c1b11d4defd81b71cf9a79eff0dcf838b1871e2f464b888fd9de@ec2-46-137-84-140.eu-west-1.compute.amazonaws.com:5432/d7me8q5bctljau", //+ "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"//,
