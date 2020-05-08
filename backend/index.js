@@ -17,9 +17,9 @@ const app = express()
   .use(express.static(path.resolve(__dirname, '../public')));
 
 app.get('/', (req, res) => res.sendFile(INDEX));
-const server = app.listen(port, () => console.log(`Listening on ${port}`));
+//const server = app.listen(port, () => console.log(`Listening on ${port}`));
 
-//const server = https.createServer({rejectUnauthorized: false}, app).listen(port, () => console.log(`Listening https on ${port}`));
+const server = https.createServer({requestCert:false, rejectUnauthorized: false}, app).listen(port, () => console.log(`Listening https on ${port}`));
 
 const io = socketIO(server);
 
