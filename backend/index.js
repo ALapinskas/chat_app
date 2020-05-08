@@ -1,4 +1,5 @@
 const express = require("express"),
+      https = require('https'),
       path = require('path'),
       socketIO = require("socket.io"),
       port = process.env.PORT || 3000,
@@ -16,7 +17,11 @@ const app = express()
   .use(express.static(path.resolve(__dirname, '../public')))
   .use((req, res) => res.sendFile(INDEX/*, { root: __dirname }*/));
 
-const server = app.listen(port, () => console.log(`Listening on ${port}`));
+//const server = app.listen(port, () => console.log(`Listening on ${port}`));
+
+var server = process.env.NODE_ENV === "development" 
+      ? app.listen(port, () => console.log(`Listening localhost on ${port}`)) 
+      : https.createServer({rejectUnauthorized: false}, app).listen(port, () => console.log(`Listening https on ${port}`));
 
 const io = socketIO(server);
 
