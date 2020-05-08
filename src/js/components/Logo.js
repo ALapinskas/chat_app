@@ -65,7 +65,7 @@ class Logo extends React.Component{
                     <p>Вы вошли как: {this.state.authorName} </p>
                     <Button icon="edit" onClick={this._showChangeNameDialog} class="bp3-button" type="submit">Сменить ник</Button>
                 </FormGroup>
-                <Dialog title="Введите ваше имя" usePortal={true} canEscapeKeyClose={!this.state.firstTimeOpen} isCloseButtonShown={!this.state.firstTimeOpen} onClose={this._cancelAndClose} isOpen={this.state.isDialogOpen}>
+                <Dialog title="Введите ваше имя" usePortal={true} canOutsideClickClose={!this.state.firstTimeOpen} canEscapeKeyClose={!this.state.firstTimeOpen} isCloseButtonShown={!this.state.firstTimeOpen} onClose={this._cancelAndClose} isOpen={this.state.isDialogOpen}>
                     <div className={Classes.DIALOG_BODY}>
                         <input className="shout_box bp3-input" value={this.state.inputName} onChange={(input) => this._updateInputName(input.target.value)} type="text"/>
                     </div>
