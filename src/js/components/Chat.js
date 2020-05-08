@@ -21,12 +21,13 @@ class Chat extends React.Component{
         };
         this.socket = undefined;
 
-        //this.updateMessages = this.updateMessages.bind(this);
+        this._updateAuthorName = this._updateAuthorName.bind(this);
     }
 
     componentWillMount() {
         //DataStore.subscribe(this.updateMessages);
         //updateTheMessages = setInterval(() => this.updateMessages(), 1000);
+        this.dataStore.on('author', this._updateAuthorName);
     }
 
     componentWillUnmount() {
@@ -39,6 +40,10 @@ class Chat extends React.Component{
         this.socket.on('messagesUpdated', (messages) => {
             this.setState({messages});
         });
+    }
+
+    _updateAuthorName(author) {
+        this.setState({author});
     }
 
     onSend(message) {
