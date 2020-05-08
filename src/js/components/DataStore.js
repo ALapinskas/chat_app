@@ -4,8 +4,12 @@ var EventEmitter = require('events').EventEmitter;
 var messages = [], author;
 
 class DataStore extends EventEmitter {
+    showChangeAuthorDialog() {
+        this.emit("showChangeAuthorDialog");
+    }
+
     getAuthorName () {
-        return author ? author : "Имя не задано";
+        return author ? author : "";
     }
 
     setAuthorName (name) {

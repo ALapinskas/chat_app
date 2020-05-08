@@ -10,7 +10,8 @@ class Logo extends React.Component{
         this.state = {
             authorName: authorName,
             inputName: authorName,
-            isDialogOpen: false
+            isDialogOpen: false,
+            firstTimeOpen: false
         };
         this._updateInputName = this._updateInputName.bind(this);
         this._updateAuthorName = this._updateAuthorName.bind(this);
@@ -22,6 +23,7 @@ class Logo extends React.Component{
 
     componentWillMount() {
         this.dataStore.on('author', this._updateAuthorName);
+        this.dataStore.on("showChangeAuthorDialog", () => this._showChangeNameDialog(true));
     }
 
     _updateInputName(inputName) {
@@ -33,8 +35,8 @@ class Logo extends React.Component{
         this._updateInputName(authorName);
     }
 
-    _showChangeNameDialog() {
-        this.setState({ isDialogOpen: true });
+    _showChangeNameDialog(firstTimeOpen = false) {
+        this.setState({ isDialogOpen: true, firstTimeOpen });
     }
 
     _cancelAndClose() {
@@ -43,8 +45,12 @@ class Logo extends React.Component{
     }
 
     _saveAndClose() {
-        this.dataStore.setAuthorName(this.state.inputName);
-        this._closeChangeNameDialog();
+        if (this.state.inputName && this.state.inputName.trim().length > 0) {
+            this.dataStore.setAuthorName(this.state.inputName);
+            this._closeChangeNameDialog();
+        } else {
+            console.log("Имя не может быть пустым!");
+        }
     }
 
     _closeChangeNameDialog() {
@@ -59,13 +65,13 @@ class Logo extends React.Component{
                     <p>Вы вошли как: {this.state.authorName} </p>
                     <Button icon="edit" onClick={this._showChangeNameDialog} class="bp3-button" type="submit">Сменить ник</Button>
                 </FormGroup>
-                <Dialog title="Введите ваше имя" usePortal={true} canEscapeKeyClose={true} isCloseButtonShown={true} onClose={this._cancelAndClose} isOpen={this.state.isDialogOpen}>
+                <Dialog title="Введите ваше имя" usePortal={true} canEscapeKeyClose={!this.state.firstTimeOpen} isCloseButtonShown={!this.state.firstTimeOpen} onClose={this._cancelAndClose} isOpen={this.state.isDialogOpen}>
                     <div className={Classes.DIALOG_BODY}>
                         <input className="shout_box bp3-input" value={this.state.inputName} onChange={(input) => this._updateInputName(input.target.value)} type="text"/>
                     </div>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this._cancelAndClose}>Отмена</Button>
+                            <Button disabled={this.state.firstTimeOpen} onClick={this._cancelAndClose}>Отмена</Button>
                             <Button onClick={this._saveAndClose}>Сохранить</Button>
                         </div>
                     </div>

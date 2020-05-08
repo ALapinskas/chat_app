@@ -8,16 +8,12 @@ class Chat extends React.Component{
 
     constructor(props) {
         super();
-        let enterName =  prompt('Please enter your name');
 
         this.dataStore = props.store;
 
-        if (enterName) {
-            this.dataStore.setAuthorName(enterName);
-        }
         this.state = {
             messages: this.dataStore.getMessages(),
-            author: enterName
+            author: this.dataStore.getAuthorName()
         };
         this.socket = undefined;
 
@@ -25,9 +21,8 @@ class Chat extends React.Component{
     }
 
     componentWillMount() {
-        //DataStore.subscribe(this.updateMessages);
-        //updateTheMessages = setInterval(() => this.updateMessages(), 1000);
         this.dataStore.on('author', this._updateAuthorName);
+        this.dataStore.showChangeAuthorDialog();
     }
 
     componentWillUnmount() {
