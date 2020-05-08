@@ -88,8 +88,8 @@ function connectToDb() {
               //https.globalAgent.options.rejectUnauthorized = false;
               process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
               db = new pg.Client({
-                //connectionString: process.env.DATABASE_URL,
-                connectionString: "postgres://hjpvdkqvhuucpl:5bcaa8bfb4e3c1b11d4defd81b71cf9a79eff0dcf838b1871e2f464b888fd9de@ec2-46-137-84-140.eu-west-1.compute.amazonaws.com:5432/d7me8q5bctljau", //+ "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"//,
+                connectionString: process.env.DATABASE_URL,
+                //connectionString: "postgres://hjpvdkqvhuucpl:5bcaa8bfb4e3c1b11d4defd81b71cf9a79eff0dcf838b1871e2f464b888fd9de@ec2-46-137-84-140.eu-west-1.compute.amazonaws.com:5432/d7me8q5bctljau", //+ "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"//,
                 ssl: true
               });
       
