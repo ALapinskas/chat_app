@@ -14,9 +14,9 @@ let messages = [], db;
 dotenv.config();
 
 const app = express()
-  .use(express.static(path.resolve(__dirname, '../public')))
-  .use((req, res) => res.sendFile(INDEX/*, { root: __dirname }*/));
+  .use(express.static(path.resolve(__dirname, '../public')));
 
+app.get('/', (req, res) => res.sendFile(INDEX));
 //const server = app.listen(port, () => console.log(`Listening on ${port}`));
 
 var server = process.env.NODE_ENV === "development" 
