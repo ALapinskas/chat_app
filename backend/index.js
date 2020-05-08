@@ -18,16 +18,16 @@ const app = express()
   .use(express.static(path.resolve(__dirname, '../public')));
 
 app.get('/', (req, res) => res.sendFile(INDEX));
-//const server = app.listen(port, () => console.log(`Listening on ${port}`));
+const server = app.listen(port, () => console.log(`Listening on ${port}`));
 
-const options = {
-  key: fs.readFileSync('key.pem', 'utf8'),
-  cert: fs.readFileSync('cert.pem', 'utf8'),
-  passphrase: process.env.HTTPS_PASSPHRASE || '1234a', 
-  rejectUnauthorized: false
-};
+//const options = {
+//  key: fs.readFileSync('key.pem', 'utf8'),
+//  cert: fs.readFileSync('cert.pem', 'utf8'),
+//  passphrase: process.env.HTTPS_PASSPHRASE || '1234a', 
+//  rejectUnauthorized: false
+//};
 
-const server = https.createServer(options, app).listen(port, () => console.log(`Listening https on ${port}`));
+//const server = https.createServer(options, app).listen(port, () => console.log(`Listening https on ${port}`));
 
 const io = socketIO(server);
 
