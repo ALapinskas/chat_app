@@ -14,7 +14,7 @@ let store = new DataStore();
 let contact = (
     <div>
         <Logo store={store} /> 
-        <h1>Чат<br /> Нижнего Новгорода! </h1>
+        <h1>Чат{/*<br /> Потерянных половинок*/}</h1>
         <Chat store={store} />
     </div>
 );

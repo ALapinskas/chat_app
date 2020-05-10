@@ -21,7 +21,7 @@ class Chat extends React.Component{
     }
 
     componentWillMount() {
-        this.dataStore.on('author', this._updateAuthorName);
+        this.dataStore.on('authorChanged', this._updateAuthorName);
         this.dataStore.showChangeAuthorDialog();
     }
 

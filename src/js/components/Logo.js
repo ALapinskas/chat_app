@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { FormGroup, Classes, Dialog, Button } from "@blueprintjs/core";
+import { FormGroup, Classes, Dialog, Button, RadioGroup, Radio } from "@blueprintjs/core";
 
 class Logo extends React.Component{
 
@@ -9,6 +9,7 @@ class Logo extends React.Component{
         const authorName = this.dataStore.getAuthorName();
         this.state = {
             authorName: authorName,
+            gender: undefined,
             inputName: authorName,
             isDialogOpen: false,
             firstTimeOpen: false
@@ -22,7 +23,7 @@ class Logo extends React.Component{
     }
 
     componentWillMount() {
-        this.dataStore.on('author', this._updateAuthorName);
+        this.dataStore.on('authorChanged', this._updateAuthorName);
         this.dataStore.on("showChangeAuthorDialog", () => this._showChangeNameDialog(true));
     }
 
@@ -44,6 +45,11 @@ class Logo extends React.Component{
                 nameInput[0].select();
             }
         });
+    }
+
+    _handleGenderChange(gender) {
+        this.setState({gender});
+        this.dataStore.setAuthorGender(gender);
     }
 
     _cancelAndClose() {
@@ -82,9 +88,18 @@ class Logo extends React.Component{
                     <p>Вы вошли как: {this.state.authorName} </p>
                     <Button icon="edit" onClick={() => this._showChangeNameDialog()} class="bp3-button" type="submit">Сменить ник</Button>
                 </FormGroup>
-                <Dialog title="Введите ваше имя" usePortal={true} canOutsideClickClose={!this.state.firstTimeOpen} canEscapeKeyClose={!this.state.firstTimeOpen} isCloseButtonShown={!this.state.firstTimeOpen} onClose={this._closeChangeNameDialog} isOpen={this.state.isDialogOpen}>
+                <Dialog title="Введите ваше имя и пол" usePortal={true} canOutsideClickClose={!this.state.firstTimeOpen} canEscapeKeyClose={!this.state.firstTimeOpen} isCloseButtonShown={!this.state.firstTimeOpen} onClose={this._closeChangeNameDialog} isOpen={this.state.isDialogOpen}>
                     <form  onSubmit={this._saveAndClose}>
                         <div className={Classes.DIALOG_BODY}>
+                            <RadioGroup
+                                label="Кто вы?"
+                                onChange={(input) => this._handleGenderChange(input.target.value)}
+                                selectedValue={this.state.gender}
+                            >
+                                <Radio label="Парень" value="male" />
+                                <Radio label="Девушка" value="female" />
+                            </RadioGroup>
+                            <label >Ваше Имя:</label>
                             <input className="shout_box nameInput bp3-input" value={this.state.inputName} onChange={(input) => this._updateInputName(input.target.value)} type="text"/>
                         </div>
                         <div className={Classes.DIALOG_FOOTER}>

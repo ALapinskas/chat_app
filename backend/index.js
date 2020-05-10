@@ -35,6 +35,9 @@ const io = socketIO(server);
 
 io.on('connection', (socket) => {
     console.log("a user connected :D");
+    if(Object.keys(io.sockets.connected).length === 1) {
+      console.log('only one user is online, lets call somebody');
+    }
     //retrieve all messages
     if(messages.length === 0) {
       retrieveMessagesFromDatabase(function() {

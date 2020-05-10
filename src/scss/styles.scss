@@ -2,6 +2,14 @@
 @import "~@blueprintjs/core/lib/css/blueprint.css";
 @import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
 
+body.male {
+    background: #dcf4fc;
+}
+
+body.female {
+    background: #fad9f3;
+}
+
 #app{
     margin: 0 auto;
     width: 400px;
