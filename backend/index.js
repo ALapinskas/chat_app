@@ -10,7 +10,7 @@ const express = require("express"),
       dotenv = require('dotenv'),
       INDEX = path.resolve(__dirname, "../public/index.html");
 
-let messages = [], db;
+let messages = [], db, isLonely, soulMessages;
 
 dotenv.config();
 
@@ -37,6 +37,9 @@ io.on('connection', (socket) => {
     console.log("a user connected :D");
     if(Object.keys(io.sockets.connected).length === 1) {
       console.log('only one user is online, lets call somebody');
+      isLonely = true;
+    } else {
+      isLonely = false;
     }
     //retrieve all messages
     if(messages.length === 0) {
@@ -51,6 +54,14 @@ io.on('connection', (socket) => {
       if (message) {
         messages.push(message);
         io.sockets.emit('messagesUpdated', messages);
+
+        if (isLonely) {
+          let answer = answerToYourLonelySoul(message);
+          this.setTimeout(() => {
+            messages.push(answer);
+            io.sockets.emit('messagesUpdated', answer);
+          }, 1000);
+        }
       }
     });
     socket.on('disconnect', () => {
@@ -58,6 +69,12 @@ io.on('connection', (socket) => {
       if(Object.keys(io.sockets.connected).length === 0) {
         //if all users are dissconneced save data to the database
         saveMessagesToDatabase();
+      }
+      if(Object.keys(io.sockets.connected).length === 1) {
+        console.log('only one user is online, lets call somebody');
+        isLonely = true;
+      } else {
+        isLonely = false;
       }
     });
 });
@@ -237,4 +254,24 @@ function saveMessagesToDatabasePostrgress() {
     .catch((err) => {
       console.log(err);
     });
+}
+
+function answerToYourLonelySoul(authorMessage) {
+  const { message, author, gender } = authorMessage;
+  const soulGender = gender === "male" ? "female" : "male";
+  const soulName = gender === "male" ? "Зая" : "Заяц";
+  const soulMessage = findCorrectMessage(message, author, gender);
+  soulMessages.push(soulMessage);
+  return {message: soulMessage, author: soulName, gender: soulGender};
+}
+
+function findCorrectMessage(message, author, authorGender) {
+  let authorNiceName = authorGender === "male" ? "Заяц" : "Зая";
+  if (messages.length < 1) {
+    return "Привет, " + authorNiceName;
+  } else if (soulMessages && soulMessages.length < 2) {
+    return "Как дела солнце?";
+  } else {
+    return "Я так скучал" + ( authorGender === "male" ? "а" : "" ) + " по тебе";
+  }
 }

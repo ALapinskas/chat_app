@@ -34,6 +34,10 @@ class DataStore extends EventEmitter {
         }
     }
 
+    getAuthorGender() {
+        return gender;
+    }
+
     getMessages () {
        return messages;
     }

@@ -42,7 +42,7 @@ class Chat extends React.Component{
     }
 
     onSend(message) {
-        this.socket.emit('message', {message, author: this.state.author});
+        this.socket.emit('message', {message, author: this.state.author, gender: this.dataStore.getAuthorGender()});
     }
 
     render() {
