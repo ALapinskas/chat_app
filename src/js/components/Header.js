@@ -14,6 +14,8 @@ class Header extends React.Component{
             isDialogOpen: false,
             firstTimeOpen: false,
             emptyNameError: false,
+            alertMessage: "",
+            showAlert: false,
             usersOnline: 0
         };
         this._updateInputName = this._updateInputName.bind(this);
@@ -96,19 +98,39 @@ class Header extends React.Component{
         this.setState({emptyNameError: false});
     }
 
+    _handleAlertClose() {
+        this.setState({showAlert: false});
+    }
+
     _callForSoul() {
-        this.dataBus.callForSoul();
+        let tryToCall = Math.floor(Math.random() * 10);  
+        if (tryToCall > 5) {
+            this.setState({showAlert: true, alertMessage: "Вам повезло ваша половинка нашлась, скажите что-нибудь!"});
+            this.dataBus.callForSoul();
+        } else {
+            this.setState({showAlert: true, alertMessage: "К сожалению поиски не увенчались успехом, попробуйте еще раз!"});
+        }
+        
     }
 
     render() {
         return (
             <div className="header">
+                <Alert
+                    confirmButtonText="Закрыть"
+                    isOpen={this.state.showAlert}
+                    onClose={() => this._handleAlertClose()}
+                >
+                    <p>
+                        {this.state.alertMessage}
+                    </p>
+                </Alert>
                 <div className="Logo" />
                 <FormGroup className="user-info">
                     <p>Вы вошли как: {this.state.authorName} </p>
                     <Button icon="edit" onClick={() => this._showChangeNameDialog()} class="bp3-button" type="submit">Сменить ник</Button>
 
-                    {this.state.usersOnline === 1 ? <p>Вы один в чате<br /><Tooltip content="Вы можете попробовать позвать собеседника" /*вашу потерянную половинку, если у вас она есть*/><Button onClick={() => this._callForSoul()}>Позвать</Button></Tooltip></p>
+                    {this.state.usersOnline === 1 ? <p>Вы один в чате<br />{/*<Tooltip content="Вы можете попробовать позвать вашу потерянную половинку, если у вас она есть"><Button onClick={() => this._callForSoul()}>Позвать</Button></Tooltip>*/}</p>
                     : <p>Пользователей он-лайн: {this.state.usersOnline}</p>}
 
                 </FormGroup>
@@ -126,7 +148,7 @@ class Header extends React.Component{
                             <label >Ваше Имя:</label>
                             <input className="shout_box nameInput bp3-input" value={this.state.inputName} onChange={(input) => this._updateInputName(input.target.value)} type="text"/>
                             <Alert
-                                confirmButtonText="Okay"
+                                confirmButtonText="Закрыть"
                                 isOpen={this.state.emptyNameError}
                                 onClose={this._handleErrorClose}
                             >
