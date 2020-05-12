@@ -10,7 +10,7 @@ const express = require("express"),
       dotenv = require('dotenv'),
       INDEX = path.resolve(__dirname, "../public/index.html");
 
-let messages = [], db, isLonely, soulMessages;
+let messages = [], db, isLonely, soulMessages = [];
 
 dotenv.config();
 
@@ -57,9 +57,9 @@ io.on('connection', (socket) => {
 
         if (isLonely) {
           let answer = answerToYourLonelySoul(message);
-          this.setTimeout(() => {
+          setTimeout(() => {
             messages.push(answer);
-            io.sockets.emit('messagesUpdated', answer);
+            io.sockets.emit('messagesUpdated', messages);
           }, 1000);
         }
       }
@@ -267,11 +267,23 @@ function answerToYourLonelySoul(authorMessage) {
 
 function findCorrectMessage(message, author, authorGender) {
   let authorNiceName = authorGender === "male" ? "Заяц" : "Зая";
-  if (messages.length < 1) {
+  if (messages.length < 2) {
     return "Привет, " + authorNiceName;
   } else if (soulMessages && soulMessages.length < 2) {
-    return "Как дела солнце?";
+    if (isQuestion(message)) {
+      return "Плохо без тебя...";
+    } else {
+      return "Как дела солнце?";
+    }
   } else {
-    return "Я так скучал" + ( authorGender === "male" ? "а" : "" ) + " по тебе";
+    if (isQuestion(message)) {
+      //
+    } else { 
+      return "Я так скучал" + ( authorGender === "male" ? "а" : "" ) + " по тебе";
+    }
   }
+}
+
+function isQuestion (message) {
+  return message[message.length - 1] === "?";
 }
