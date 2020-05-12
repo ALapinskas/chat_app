@@ -34,13 +34,14 @@ const server = app.listen(port, () => console.log(`Listening on ${port}`));
 const io = socketIO(server);
 
 io.on('connection', (socket) => {
-    console.log("a user connected :D");
-    if(Object.keys(io.sockets.connected).length === 1) {
-      console.log('only one user is online, lets call somebody');
-      isLonely = true;
-    } else {
+    //console.log("a user connected :D");
+    let usersOnline = Object.keys(io.sockets.connected).length;
+
+    socket.emit('usersConnected', usersOnline);
+    if(usersOnline > 1) {
       isLonely = false;
     }
+    
     //retrieve all messages
     if(messages.length === 0) {
       retrieveMessagesFromDatabase(function() {
@@ -64,18 +65,23 @@ io.on('connection', (socket) => {
         }
       }
     });
+    
     socket.on('disconnect', () => {
-      console.log('Client disconnected');
-      if(Object.keys(io.sockets.connected).length === 0) {
+      //console.log('Client disconnected');
+
+      usersOnline = Object.keys(io.sockets.connected).length;
+      socket.emit('usersConnected', usersOnline);
+      
+      if(usersOnline === 0) {
         //if all users are dissconneced save data to the database
         saveMessagesToDatabase();
       }
-      if(Object.keys(io.sockets.connected).length === 1) {
-        console.log('only one user is online, lets call somebody');
-        isLonely = true;
-      } else {
-        isLonely = false;
-      }
+    });
+
+    socket.on('callForSoul', () => {
+      isLonely = true;
+      usersOnline = Object.keys(io.sockets.connected).length + 1;
+      socket.emit('usersConnected', usersOnline);
     });
 });
 
@@ -287,7 +293,7 @@ function findCorrectMessage(message, author, authorGender) {
       }
     } else if (soulMessages.length === 3 && soulMessages[2].slice(0,4) !== "Я так") { 
       return "Я так скучал" + ( authorGender === "male" ? "а" : "" ) + " по тебе";
-    }  else if( soulMessages[soulMessages.length - 1].slice(-11, -1) !== "нехватает." ) {
+    }  else if( !soulMessages.find(message => message === authorNiceName + ", мне так тебя нехватает.." )) {
       return authorNiceName + ", мне так тебя нехватает..";
     } else {
       return "...связь потеряна";

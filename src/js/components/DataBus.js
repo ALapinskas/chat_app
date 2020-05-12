@@ -3,7 +3,33 @@ var EventEmitter = require('events').EventEmitter;
 
 var messages = [], author, gender = "male";
 
-class DataStore extends EventEmitter {
+class DataBus extends EventEmitter {
+    constructor(props) {
+        super();
+        this._socket = props.io();
+        this.registerListeners()
+    }
+
+    registerListeners() {
+        this.connection.on('messagesUpdated', (newMessages) => this._updateMessages(newMessages) );
+        this.connection.on('usersConnected', (usersOnline) => this._updateUsersOnline(usersOnline) );
+    }
+
+    get connection () {
+        return this._socket;
+    }
+
+    _updateMessages(newMessages) {
+        if (JSON.stringify(messages) !== JSON.stringify(newMessages) ) {
+            messages = newMessages;
+            this.emit('gotMessagesUpdates', messages);
+        }
+    }
+
+    _updateUsersOnline(usersOnline) {
+        this.emit('gotUsersOnlineUpdates', usersOnline);
+    }
+
     showChangeAuthorDialog() {
         this.emit("showChangeAuthorDialog");
     }
@@ -42,12 +68,13 @@ class DataStore extends EventEmitter {
        return messages;
     }
 
-    newMessage (message, author) {
-        //messages.push({message, author});
-        //socket.on('connect', function(){});
-        socket.emit('message', {message, author});
-        //emitter.emit('update');
+    writeMessage(message) {
+        this.connection.emit('message', {message, author, gender});
+    }
+
+    callForSoul() {
+        this.connection.emit('callForSoul');
     }
 }
 
-module.exports = DataStore;
+module.exports = DataBus;

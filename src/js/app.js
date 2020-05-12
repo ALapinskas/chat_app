@@ -2,20 +2,21 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Logo from './components/Logo';
+import Header from './components/Header';
 import Chat from './components/Chat';
-import DataStore from './components/DataStore';
+import DataBus from './components/DataBus';
 import css from '../scss/styles.scss';
 import dotenv from 'dotenv';
+import io from 'socket.io-client';
 dotenv.config()
 
-let store = new DataStore();
+let dataBus = new DataBus({io});
 
 let contact = (
     <div>
-        <Logo store={store} /> 
+        <Header dataBus={dataBus} /> 
         <h1>Чат{/*<br /> Потерянных половинок*/}</h1>
-        <Chat store={store} />
+        <Chat dataBus={dataBus} />
     </div>
 );
 

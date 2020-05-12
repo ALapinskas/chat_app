@@ -1,6 +1,4 @@
-var React = require('react');
-var updateTheMessages;
-var io = require('socket.io-client');
+import React from 'react';
 
 import { ChatList, ChatBox } from './ChatBox';
 
@@ -9,30 +7,28 @@ class Chat extends React.Component{
     constructor(props) {
         super();
 
-        this.dataStore = props.store;
+        this.dataBus = props.dataBus;
 
         this.state = {
-            messages: this.dataStore.getMessages(),
-            author: this.dataStore.getAuthorName()
+            messages: this.dataBus.getMessages(),
+            author: this.dataBus.getAuthorName()
         };
-        this.socket = undefined;
 
         this._updateAuthorName = this._updateAuthorName.bind(this);
     }
 
     componentWillMount() {
-        this.dataStore.on('authorChanged', this._updateAuthorName);
-        this.dataStore.showChangeAuthorDialog();
+        this.dataBus.on('authorChanged', this._updateAuthorName);
+        this.dataBus.showChangeAuthorDialog();
     }
 
     componentWillUnmount() {
-        this.socket.removeAllListeners();
-        this.socket = undefined;
+        this.dataBus.removeAllListeners();
+        this.dataBus = undefined;
     }
 
     componentDidMount() {
-        this.socket = io();
-        this.socket.on('messagesUpdated', (messages) => {
+        this.dataBus.on('gotMessagesUpdates', (messages) => {
             this.setState({messages});
         });
     }
@@ -42,7 +38,7 @@ class Chat extends React.Component{
     }
 
     onSend(message) {
-        this.socket.emit('message', {message, author: this.state.author, gender: this.dataStore.getAuthorGender()});
+        this.dataBus.writeMessage(message);
     }
 
     render() {

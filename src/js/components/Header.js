@@ -1,19 +1,20 @@
 ﻿import React from 'react';
-import { FormGroup, Classes, Dialog, Button, RadioGroup, Radio, Alert } from "@blueprintjs/core";
+import { FormGroup, Classes, Dialog, Button, RadioGroup, Radio, Alert, Tooltip, Spinner } from "@blueprintjs/core";
 
-class Logo extends React.Component{
+class Header extends React.Component{
 
     constructor(props){
         super();
-        this.dataStore = props.store;
-        const authorName = this.dataStore.getAuthorName();
+        this.dataBus = props.dataBus;
+        const authorName = this.dataBus.getAuthorName();
         this.state = {
             authorName: authorName,
-            gender: this.dataStore.getAuthorGender(),
+            gender: this.dataBus.getAuthorGender(),
             inputName: authorName,
             isDialogOpen: false,
             firstTimeOpen: false,
-            emptyNameError: false
+            emptyNameError: false,
+            usersOnline: 0
         };
         this._updateInputName = this._updateInputName.bind(this);
         this._updateAuthorName = this._updateAuthorName.bind(this);
@@ -25,8 +26,13 @@ class Logo extends React.Component{
     }
 
     componentWillMount() {
-        this.dataStore.on('authorChanged', this._updateAuthorName);
-        this.dataStore.on("showChangeAuthorDialog", () => this._showChangeNameDialog(true));
+        this.dataBus.on('authorChanged', this._updateAuthorName);
+        this.dataBus.on("showChangeAuthorDialog", () => this._showChangeNameDialog(true));
+        this.dataBus.on("gotUsersOnlineUpdates", (usersOnline) => this._updateUsersOnlineCounter(usersOnline));
+    }
+
+    componentWillUnmount() {
+        this.dataBus.removeAllListeners();
     }
 
     _updateInputName(inputName) {
@@ -36,6 +42,10 @@ class Logo extends React.Component{
     _updateAuthorName(authorName) {
         this.setState({authorName});
         this._updateInputName(authorName);
+    }
+
+    _updateUsersOnlineCounter(usersOnline) {
+        this.setState({usersOnline});
     }
 
     _showChangeNameDialog(firstTimeOpen = false) {
@@ -51,7 +61,7 @@ class Logo extends React.Component{
 
     _handleGenderChange(gender) {
         this.setState({gender});
-        this.dataStore.setAuthorGender(gender);
+        this.dataBus.setAuthorGender(gender);
     }
 
     _cancelAndClose() {
@@ -64,7 +74,7 @@ class Logo extends React.Component{
             e.preventDefault();
         }
         if (this.state.inputName && this.state.inputName.trim().length > 0) {
-            this.dataStore.setAuthorName(this.state.inputName);
+            this.dataBus.setAuthorName(this.state.inputName);
             this._closeChangeNameDialog();
         } else {
             this.setState({emptyNameError: true});
@@ -86,6 +96,10 @@ class Logo extends React.Component{
         this.setState({emptyNameError: false});
     }
 
+    _callForSoul() {
+        this.dataBus.callForSoul();
+    }
+
     render() {
         return (
             <div className="header">
@@ -93,6 +107,10 @@ class Logo extends React.Component{
                 <FormGroup className="user-info">
                     <p>Вы вошли как: {this.state.authorName} </p>
                     <Button icon="edit" onClick={() => this._showChangeNameDialog()} class="bp3-button" type="submit">Сменить ник</Button>
+
+                    {this.state.usersOnline === 1 ? <p>Вы один в чате<br /><Tooltip content="Вы можете попробовать позвать вашу потерянную половинку, если у вас она есть"><Button onClick={() => this._callForSoul()}>Позвать</Button></Tooltip></p>
+                    : <p>Пользователей он-лайн: {this.state.usersOnline}</p>}
+
                 </FormGroup>
                 <Dialog title="Введите ваше имя и пол" usePortal={true} canOutsideClickClose={!this.state.firstTimeOpen} canEscapeKeyClose={!this.state.firstTimeOpen} isCloseButtonShown={!this.state.firstTimeOpen} onClose={this._closeChangeNameDialog} isOpen={this.state.isDialogOpen}>
                     <form  onSubmit={this._saveAndClose}>
@@ -130,4 +148,4 @@ class Logo extends React.Component{
     }
 }
 
-module.exports = Logo;
+module.exports = Header;
