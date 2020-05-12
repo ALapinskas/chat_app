@@ -1,5 +1,5 @@
 //This is just imitation
-var EventEmitter = require('events').EventEmitter;
+import { EventEmitter } from 'events';
 
 var messages = [], author, gender = "male";
 
