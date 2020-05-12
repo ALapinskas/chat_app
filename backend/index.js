@@ -277,11 +277,20 @@ function findCorrectMessage(message, author, authorGender) {
     }
   } else {
     if (isQuestion(message)) {
-      message.slice(0, 5).toLowerCase() === "давай" ? "Давай!" : "Не знаю...";
-    } else if (soulMessages.length < 4) { 
+      switch(message.slice(0, 5).toLowerCase()) {
+        case "давай":
+          return "Давай!";
+        case "правд":
+          return "Да"
+        default:
+          return "Не знаю...";
+      }
+    } else if (soulMessages.length === 3 && soulMessages[2].slice(0,4) !== "Я так") { 
       return "Я так скучал" + ( authorGender === "male" ? "а" : "" ) + " по тебе";
-    } else {
+    }  else if( soulMessages[soulMessages.length - 1].slice(-11, -1) !== "нехватает." ) {
       return authorNiceName + ", мне так тебя нехватает..";
+    } else {
+      return "...связь потеряна";
     }
   }
 }
