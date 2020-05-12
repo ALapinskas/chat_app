@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
           setTimeout(() => {
             messages.push(answer);
             io.sockets.emit('messagesUpdated', messages);
-          }, 1000);
+          }, 2000);
         }
       }
     });
@@ -268,7 +268,7 @@ function answerToYourLonelySoul(authorMessage) {
 function findCorrectMessage(message, author, authorGender) {
   let authorNiceName = authorGender === "male" ? "Заяц" : "Зая";
   if (messages.length < 2) {
-    return "Привет, " + authorNiceName;
+    return "Привет, " + author;
   } else if (soulMessages && soulMessages.length < 2) {
     if (isQuestion(message)) {
       return "Плохо без тебя...";
@@ -277,9 +277,11 @@ function findCorrectMessage(message, author, authorGender) {
     }
   } else {
     if (isQuestion(message)) {
-      //
-    } else { 
+      message.slice(0, 5).toLowerCase() === "давай" ? "Давай!" : "Не знаю...";
+    } else if (soulMessages.length < 4) { 
       return "Я так скучал" + ( authorGender === "male" ? "а" : "" ) + " по тебе";
+    } else {
+      return authorNiceName + ", мне так тебя нехватает..";
     }
   }
 }

@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { FormGroup, Classes, Dialog, Button, RadioGroup, Radio } from "@blueprintjs/core";
+import { FormGroup, Classes, Dialog, Button, RadioGroup, Radio, Alert } from "@blueprintjs/core";
 
 class Logo extends React.Component{
 
@@ -9,10 +9,11 @@ class Logo extends React.Component{
         const authorName = this.dataStore.getAuthorName();
         this.state = {
             authorName: authorName,
-            gender: undefined,
+            gender: this.dataStore.getAuthorGender(),
             inputName: authorName,
             isDialogOpen: false,
-            firstTimeOpen: false
+            firstTimeOpen: false,
+            emptyNameError: false
         };
         this._updateInputName = this._updateInputName.bind(this);
         this._updateAuthorName = this._updateAuthorName.bind(this);
@@ -20,6 +21,7 @@ class Logo extends React.Component{
         this._saveAndClose = this._saveAndClose.bind(this);
         this._cancelAndClose = this._cancelAndClose.bind(this);
         this._closeChangeNameDialog = this._closeChangeNameDialog.bind(this);
+        this._handleErrorClose = this._handleErrorClose.bind(this);
     }
 
     componentWillMount() {
@@ -65,7 +67,7 @@ class Logo extends React.Component{
             this.dataStore.setAuthorName(this.state.inputName);
             this._closeChangeNameDialog();
         } else {
-            console.log("Имя не может быть пустым!");
+            this.setState({emptyNameError: true});
         }
     }
 
@@ -78,6 +80,10 @@ class Logo extends React.Component{
                 messageInput[0].select();
             }
         })
+    }
+
+    _handleErrorClose() {
+        this.setState({emptyNameError: false});
     }
 
     render() {
@@ -101,6 +107,15 @@ class Logo extends React.Component{
                             </RadioGroup>
                             <label >Ваше Имя:</label>
                             <input className="shout_box nameInput bp3-input" value={this.state.inputName} onChange={(input) => this._updateInputName(input.target.value)} type="text"/>
+                            <Alert
+                                confirmButtonText="Okay"
+                                isOpen={this.state.emptyNameError}
+                                onClose={this._handleErrorClose}
+                            >
+                                <p>
+                                    Имя не может быть пустым!
+                                </p>
+                            </Alert>
                         </div>
                         <div className={Classes.DIALOG_FOOTER}>
                             <div className={Classes.DIALOG_FOOTER_ACTIONS}>

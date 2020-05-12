@@ -1,7 +1,7 @@
 //This is just imitation
 var EventEmitter = require('events').EventEmitter;
 
-var messages = [], author, gender;
+var messages = [], author, gender = "male";
 
 class DataStore extends EventEmitter {
     showChangeAuthorDialog() {
