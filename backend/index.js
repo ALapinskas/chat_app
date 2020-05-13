@@ -224,6 +224,7 @@ function saveMessagesToDatabaseMongo() {
 function retrieveMessagesFromDatabasePostgress(finishedCallBack) {
 
   connectToDb().then(() => {
+    console.log('start to retrieving messages');
     db.query('SELECT * FROM messages;')
       .then((res) => {
         console.log(res.rows);
@@ -255,6 +256,7 @@ function saveMessagesToDatabasePostrgress() {
   connectToDb()
     .then(() => db.query("CREATE TABLE IF NOT EXISTS messages (id SERIAL PRIMARY KEY, message text, author text, timestamp timestamp default current_timestamp);"))
     .then(() => {
+      console.log('started to save messages to db');
       let preparedPromisesQueres = [];
       messages.forEach((message) => {
         if (!message.hasOwnProperty('id')) {
