@@ -10,11 +10,9 @@ const express = require("express"),
       dotenv = require('dotenv'),
       INDEX = path.resolve(__dirname, "../public/index.html");
 
-let messages = [], db, isLonely, soulMessages = [];
+let messages = [], db;
 
 dotenv.config();
-
-//process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const app = express()
   .use(express.static(path.resolve(__dirname, '../public')));
@@ -38,9 +36,6 @@ io.on('connection', (socket) => {
     let usersOnline = Object.keys(io.sockets.connected).length;
 
     socket.emit('usersConnected', usersOnline);
-    if(usersOnline > 1) {
-      isLonely = false;
-    }
     
     //retrieve all messages
     if(messages.length === 0) {
@@ -55,14 +50,6 @@ io.on('connection', (socket) => {
       if (message) {
         messages.push(message);
         io.sockets.emit('messagesUpdated', messages);
-
-        if (isLonely) {
-          let answer = answerToYourLonelySoul(message);
-          setTimeout(() => {
-            messages.push(answer);
-            io.sockets.emit('messagesUpdated', messages);
-          }, 2000);
-        }
       }
     });
     
@@ -79,7 +66,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('callForSoul', () => {
-      isLonely = true;
       usersOnline = Object.keys(io.sockets.connected).length + 1;
       socket.emit('usersConnected', usersOnline);
     });
@@ -192,7 +178,6 @@ function saveMessagesToDatabaseSqllite() {
     messages.forEach((message) => {
         stmt.run(message.message, message.author);
     });
-    console.log('write messages');
     stmt.finalize();
   });
    
@@ -270,47 +255,4 @@ function saveMessagesToDatabasePostrgress() {
     .catch((err) => {
       console.log(err);
     });
-}
-
-function answerToYourLonelySoul(authorMessage) {
-  const { message, author, gender } = authorMessage;
-  const soulGender = gender === "male" ? "female" : "male";
-  const soulName = gender === "male" ? "Зая" : "Заяц";
-  const soulMessage = findCorrectMessage(message, author, gender);
-  soulMessages.push(soulMessage);
-  return {message: soulMessage, author: soulName, gender: soulGender};
-}
-
-function findCorrectMessage(message, author, authorGender) {
-  let authorNiceName = authorGender === "male" ? "Заяц" : "Зая";
-  if (messages.length < 2) {
-    return "Привет, " + author;
-  } else if (soulMessages && soulMessages.length < 2) {
-    if (isQuestion(message)) {
-      return "Плохо без тебя...";
-    } else {
-      return "Как дела солнце?";
-    }
-  } else {
-    if (isQuestion(message) && soulMessages.length < 6) {
-      switch(message.slice(0, 5).toLowerCase()) {
-        case "давай":
-          return "Давай!";
-        case "правд":
-          return "Да"
-        default:
-          return "Не знаю...";
-      }
-    } else if (soulMessages.length === 3 && soulMessages[2].slice(0,4) !== "Я так") { 
-      return "Я так скучал" + ( authorGender === "male" ? "а" : "" ) + " по тебе";
-    }  else if( !soulMessages.find(message => message === authorNiceName + ", мне так тебя нехватает.." )) {
-      return authorNiceName + ", мне так тебя нехватает..";
-    } else {
-      return "...связь потеряна";
-    }
-  }
-}
-
-function isQuestion (message) {
-  return message[message.length - 1] === "?";
 }

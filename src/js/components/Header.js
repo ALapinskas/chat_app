@@ -130,7 +130,7 @@ class Header extends React.Component{
                     <p>Вы вошли как: {this.state.authorName} </p>
                     <Button icon="edit" onClick={() => this._showChangeNameDialog()} class="bp3-button" type="submit">Сменить ник</Button>
 
-                    {this.state.usersOnline === 1 ? <p>Вы один в чате<br />{/*<Tooltip content="Вы можете попробовать позвать вашу потерянную половинку, если у вас она есть"><Button onClick={() => this._callForSoul()}>Позвать</Button></Tooltip>*/}</p>
+                    {this.state.usersOnline === 1 ? <p>Вы один в чате<br /></p>
                     : <p>Пользователей он-лайн: {this.state.usersOnline}</p>}
 
                 </FormGroup>
