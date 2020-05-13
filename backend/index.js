@@ -122,7 +122,7 @@ function connectToDb() {
                 }
               });
       
-              console.log('connect db');
+              console.log('connect prod db');
       
               db.connect()
                 .then(() => {
@@ -140,7 +140,7 @@ function connectToDb() {
               //ssl: true
             });
     
-            console.log('connect db');
+            console.log('connect dev db');
     
             db.connect()
               .then(() => {
