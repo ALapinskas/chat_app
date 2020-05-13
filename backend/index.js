@@ -133,6 +133,7 @@ function connectToDb() {
                   console.log('error!');
                   console.error(err);
               });
+            break;
             //});
           case "development":
             db = new Client({
@@ -149,6 +150,7 @@ function connectToDb() {
               .catch((err) => {
                 console.error(err);
             });
+            break;
         }
       })
       
@@ -189,6 +191,7 @@ function saveMessagesToDatabaseSqllite() {
     messages.forEach((message) => {
         stmt.run(message.message, message.author);
     });
+    console.log('write messages');
     stmt.finalize();
   });
    
