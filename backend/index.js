@@ -135,7 +135,7 @@ function connectToDb() {
               });
             //});
           case "development":
-            db = new Pool({
+            db = new Client({
               connectionString: "postgresql://localhost"//,
               //ssl: true
             });
@@ -223,6 +223,7 @@ function retrieveMessagesFromDatabasePostgress(finishedCallBack) {
   connectToDb().then(() => {
     db.query('SELECT * FROM messages;')
       .then((res) => {
+        console.log(res.rows);
         for (let row of res.rows) {
           messages.push({ message: row.message, author: row.author, id: row.id});
         }
