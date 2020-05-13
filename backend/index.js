@@ -282,7 +282,7 @@ function findCorrectMessage(message, author, authorGender) {
       return "Как дела солнце?";
     }
   } else {
-    if (isQuestion(message)) {
+    if (isQuestion(message) && soulMessages.length < 6) {
       switch(message.slice(0, 5).toLowerCase()) {
         case "давай":
           return "Давай!";
