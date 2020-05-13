@@ -100,7 +100,7 @@ function connectToDb() {
                 return;
               }*/
               //process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-              console.log(process.env.NODE_ENV);
+              //console.log(process.env.NODE_ENV);
 
               db = new Client({
                 connectionString: process.env.DATABASE_URL,
@@ -109,15 +109,15 @@ function connectToDb() {
                 }
               });
       
-              console.log('connect prod db');
+              //console.log('connect prod db');
       
               db.connect()
                 .then(() => {
-                  console.log('connected');
+                  //console.log('connected');
                   resolve()
                 })
                 .catch((err) => {
-                  console.log('error!');
+                  //console.log('error!');
                   console.error(err);
               });
             break;
@@ -128,7 +128,7 @@ function connectToDb() {
               //ssl: true
             });
     
-            console.log('connect dev db');
+            //console.log('connect dev db');
     
             db.connect()
               .then(() => {
@@ -210,10 +210,10 @@ function saveMessagesToDatabaseMongo() {
 function retrieveMessagesFromDatabasePostgress(finishedCallBack) {
 
   connectToDb().then(() => {
-    console.log('start to retrieving messages');
+    //console.log('start to retrieving messages');
     db.query('SELECT * FROM messages;')
       .then((res) => {
-        console.log(res.rows);
+        //console.log(res.rows);
         for (let row of res.rows) {
           messages.push({ message: row.message, author: row.author, id: row.id});
         }
@@ -242,7 +242,7 @@ function saveMessagesToDatabasePostrgress() {
   connectToDb()
     .then(() => db.query("CREATE TABLE IF NOT EXISTS messages (id SERIAL PRIMARY KEY, message text, author text, timestamp timestamp default current_timestamp);"))
     .then(() => {
-      console.log('started to save messages to db');
+      //console.log('started to save messages to db');
       let preparedPromisesQueres = [];
       messages.forEach((message) => {
         if (!message.hasOwnProperty('id')) {

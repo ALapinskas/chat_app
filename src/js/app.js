@@ -15,7 +15,7 @@ let dataBus = new DataBus({io});
 let contact = (
     <div>
         <Header dataBus={dataBus} /> 
-        <h1>Чат{/*<br /> Потерянных половинок*/}</h1>
+        <h1>Чат</h1>
         <Chat dataBus={dataBus} />
     </div>
 );
