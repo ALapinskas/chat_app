@@ -113,8 +113,9 @@ function connectToDb() {
                 console.error(`exec error: ${error}`);
                 return;
               }*/
-              //https.globalAgent.options.rejectUnauthorized = false;
               //process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+              console.log(process.env.NODE_ENV);
+
               db = new Client({
                 connectionString: process.env.DATABASE_URL,
                 ssl: {
