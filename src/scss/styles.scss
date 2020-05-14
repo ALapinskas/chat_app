@@ -18,6 +18,11 @@ body.female {
         font-family: 'Days One', sans-serif;
         font-size: 1.6em;
     }
+    .messagesList {
+        max-height: 500px;
+        overflow: scroll;
+        margin-top: 10px;
+    }
 }
 .header{
     position: relative;
