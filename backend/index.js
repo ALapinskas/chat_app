@@ -4,8 +4,6 @@ const express = require("express"),
       path = require('path'),
       socketIO = require("socket.io"),
       port = process.env.PORT || 3000,
-      //sqlite3 = require('sqlite3').verbose(),
-      //{ exec } = require('child_process'),
       { Pool, Client } = require('pg'),
       dotenv = require('dotenv'),
       INDEX = path.resolve(__dirname, "../public/index.html");
@@ -13,6 +11,10 @@ const express = require("express"),
 let messages = [], db;
 
 dotenv.config();
+
+if(process.env.NODE_ENV === "development") {
+  const sqlite3 = require('sqlite3').verbose();
+}
 
 const app = express()
   .use(express.static(path.resolve(__dirname, '../public')));
@@ -81,26 +83,9 @@ function connectToDb() {
       //code for mongo
       //db = 
     case 'postrgress':
-      /*db = new pg.Client({
-        connectionString: process.env.DATABASE_URL,
-        host: 'ec2-46-137-84-140.eu-west-1.compute.amazonaws.com',
-        database: 'd7me8q5bctljau', // default process.env.PGDATABASE || process.env.USER
-        port: 5432,
-        user: 'hjpvdkqvhuucpl',
-        password: '5bcaa8bfb4e3c1b11d4defd81b71cf9a79eff0dcf838b1871e2f464b888fd9de',
-        //ssl: true,
-      });*/
-
       return new Promise((resolve, reject) => {
         switch (process.env.NODE_ENV) {
           case "production":
-            /*exec('heroku config:get DATABASE_URL -a chatapp-nn', (error, stdout, stderr) => {
-              if (error) {
-                console.error(`exec error: ${error}`);
-                return;
-              }*/
-              //process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-              //console.log(process.env.NODE_ENV);
 
               db = new Client({
                 connectionString: process.env.DATABASE_URL,
@@ -109,26 +94,18 @@ function connectToDb() {
                 }
               });
       
-              //console.log('connect prod db');
-      
               db.connect()
                 .then(() => {
-                  //console.log('connected');
                   resolve()
                 })
                 .catch((err) => {
-                  //console.log('error!');
                   console.error(err);
               });
             break;
-            //});
           case "development":
             db = new Client({
-              connectionString: "postgresql://localhost"//,
-              //ssl: true
+              connectionString: "postgresql://localhost"
             });
-    
-            //console.log('connect dev db');
     
             db.connect()
               .then(() => {
@@ -139,8 +116,7 @@ function connectToDb() {
             });
             break;
         }
-      })
-      
+      });
   }
 }
 

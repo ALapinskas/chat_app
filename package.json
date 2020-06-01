@@ -4,8 +4,8 @@
   "description": "Websocket Chat Application",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production NODE_DB=postrgress node backend/index.js",
-    "local": "node backend/index.js",
+    "start": "node backend/index.js NODE_ENV=production NODE_DB=postrgress",
+    "local": "node backend/index.js NODE_ENV=development",
     "build": "webpack"
   },
   "repository": {
@@ -60,6 +60,7 @@
     "gulp-util": "3.0.8",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
+    "sqlite3": "4.2.0",
     "style-loader": "^1.2.1",
     "vinyl-buffer": "1.0.1",
     "vinyl-source-stream": "2.0.0",
