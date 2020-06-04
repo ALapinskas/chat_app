@@ -81,7 +81,6 @@ function connectToDb() {
           if(err) {
             console.error(err);
           }
-          console.log('123');
           resolve();
         });
       });
@@ -92,7 +91,8 @@ function connectToDb() {
       return new Promise((resolve, reject) => {
         switch (process.env.NODE_ENV) {
           case "production":
-
+              console.log('connect to db');
+              console.log(process.env.DATABASE_URL);
               db = new Client({
                 connectionString: process.env.DATABASE_URL,
                 ssl: {
