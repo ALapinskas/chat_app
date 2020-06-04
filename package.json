@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node backend/index.js NODE_ENV=production NODE_DB=postrgress",
-    "local": "node backend/index.js NODE_ENV=development",
+    "local": "node backend/index.js NODE_ENV=development NODE_DB=sqlite",
     "build": "webpack"
   },
   "repository": {

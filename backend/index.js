@@ -8,12 +8,12 @@ const express = require("express"),
       dotenv = require('dotenv'),
       INDEX = path.resolve(__dirname, "../public/index.html");
 
-let messages = [], db;
+let messages = [], db, sqlite3;
 
 dotenv.config();
 
 if(process.env.NODE_ENV === "development") {
-  const sqlite3 = require('sqlite3').verbose();
+  sqlite3 = require('sqlite3').verbose();
 }
 
 const app = express()
@@ -76,8 +76,14 @@ io.on('connection', (socket) => {
 function connectToDb() {
   switch (process.env.NODE_DB) {
     case 'sqlite':
-      db = new sqlite3.Database("database", null, (err) => {
-        console.error(err);
+      return new Promise((resolve, reject) => {
+        db = new sqlite3.Database("database", null, (err) => {
+          if(err) {
+            console.error(err);
+          }
+          console.log('123');
+          resolve();
+        });
       });
     case 'mongo':
       //code for mongo
@@ -167,7 +173,9 @@ function retrieveMessagesFromDatabaseSqllite(finishedCallBack) {
 
   db.serialize(function() {
     db.each("SELECT * FROM messages", function(err, row) {
-      messages.push({ message: row.message, author: row.author });
+      if(row && row.message) {
+        messages.push({ message: row.message, author: row.author });
+      }
     });
   }, finishedCallBack());
    
