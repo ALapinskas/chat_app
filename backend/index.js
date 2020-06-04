@@ -74,6 +74,8 @@ io.on('connection', (socket) => {
 });
 
 function connectToDb() {
+  console.log('connect to db');
+  console.log(process.env.NODE_DB);
   switch (process.env.NODE_DB) {
     case 'sqlite':
       return new Promise((resolve, reject) => {
