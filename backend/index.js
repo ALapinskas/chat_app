@@ -69,8 +69,8 @@ io.on('connection', (socket) => {
 });
 
 function connectToDb() {
-  console.log('connect to db');
-  console.log(process.env.NODE_DB);
+  //console.log('connect to db');
+  //console.log(process.env.NODE_DB);
   switch (process.env.NODE_DB) {
     case 'sqlite':
       return new Promise((resolve, reject) => {
@@ -88,8 +88,8 @@ function connectToDb() {
       return new Promise((resolve, reject) => {
         switch (process.env.NODE_ENV) {
           case "production":
-              console.log('connect to db');
-              console.log(process.env.DATABASE_URL);
+              //console.log('connect to db');
+              //console.log(process.env.DATABASE_URL);
               db = new Client({
                 connectionString: process.env.DATABASE_URL,
                 ssl: {
