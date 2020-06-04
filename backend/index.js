@@ -66,11 +66,6 @@ io.on('connection', (socket) => {
         saveMessagesToDatabase();
       }
     });
-
-    socket.on('callForSoul', () => {
-      usersOnline = Object.keys(io.sockets.connected).length + 1;
-      socket.emit('usersConnected', usersOnline);
-    });
 });
 
 function connectToDb() {
@@ -140,6 +135,8 @@ function retrieveMessagesFromDatabase(callback) {
 }
 
 function saveMessagesToDatabase() {
+  console.log('save messages');
+  console.log(process.env.NODE_DB);
   switch (process.env.NODE_DB) {
     case 'sqlite':
       saveMessagesToDatabaseSqllite();
