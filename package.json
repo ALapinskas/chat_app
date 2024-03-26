@@ -30,7 +30,7 @@
   "dependencies": {
     "@blueprintjs/core": "^3.26.0",
     "dotenv": "^8.2.0",
-    "express": "4.17.1",
+    "express": "4.19.2",
     "gulp": "4.0.2",
     "pg": "^8.0.3",
     "react": "16.13.1",
